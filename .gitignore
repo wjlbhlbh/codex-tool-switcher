@@ -1,0 +1,8 @@
+.codex/
+*.log
+guardian-logs/
+guardian-golden/
+auth-backups/
+switch-backups/
+*.bak
+*.tmp
