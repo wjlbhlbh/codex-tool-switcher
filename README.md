@@ -315,3 +315,66 @@ MIT — 详见 [LICENSE](LICENSE)
 - [Cockpit Tools](https://github.com/jlcodes99/cockpit-tools) — AI 驾驶舱工具套件
 - [Codex](https://github.com/openai/codex) — OpenAI 的 AI 编程终端
 - [codex-ccswitch-mobile](https://github.com/kuangre123/codex-ccswitch-mobile) — Codex 手机远程控制 Skill
+
+---
+
+## 十一、DeepSeek 官方 API 接入（协议翻译方案）
+
+DeepSeek 官方 API 只支持 `/v1/chat/completions`，而 Codex 使用 `/v1/responses`。需要本地翻译代理。
+
+### 推荐方案：codex_deepseek_proxy
+
+```powershell
+git clone https://github.com/Nigel211/codex_deepseek_proxy.git ~/codex_deepseek_proxy
+cd ~/codex_deepseek_proxy
+pip install -r requirements.txt
+```
+
+创建 `.env`：
+```
+DEEPSEEK_API_KEY=sk-your-deepseek-key
+DEEPSEEK_MODEL=deepseek-v4-pro
+DEEPSEEK_URL=https://api.deepseek.com/v1/chat/completions
+DEEPSEEK_DEBUG=0
+```
+
+**重要**：修改 `codex_proxy.py` 第 322 行，强制模型名：
+```python
+# 改前：effective_model = req_data.get("model") or DEEPSEEK_MODEL
+# 改后：
+effective_model = DEEPSEEK_MODEL  # Codex 可能发 gpt-5.5，DeepSeek 不认
+```
+
+注册为 Windows 自启动服务：
+```powershell
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-File ~/codex_deepseek_proxy/start-proxy.ps1"
+$trigger = New-ScheduledTaskTrigger -AtLogon -User $env:USERNAME
+Register-ScheduledTask -TaskName "CodexDeepSeekProxy" -Action $action -Trigger $trigger -Force
+```
+
+`start-proxy.ps1`:
+```powershell
+$env:DEEPSEEK_API_KEY = "sk-your-key"
+$env:DEEPSEEK_MODEL = "deepseek-v4-pro"
+Set-Location "$env:USERPROFILE\codex_deepseek_proxy"
+python codex_proxy.py
+```
+
+### 架构
+
+```
+Codex → codex_proxy:5000 → DeepSeek API
+        (Responses→Chat 翻译)
+```
+
+绕过 CC Switch 直连翻译代理，避免 CC Switch 深度链接导入污染供应商配置。
+
+## 十二、已知陷阱全集
+
+| # | 陷阱 | 现象 | 根因 | 修复 |
+|---|------|------|------|------|
+| 6 | `auth.json` 携带 `OPENAI_API_KEY` | CC Switch 供应商密钥被覆写 | CC Switch 读取 auth.json 的 API Key 触发深度链接导入 | `OPENAI_API_KEY` 必须为 `null`，守护进程需检查此字段 |
+| 7 | `codex_deepseek_proxy` 透传模型名 | DeepSeek 400: model gpt-5.5 not supported | 代理默认用 Codex 请求中的 model 而非配置值 | 修改代理代码强制使用 `DEEPSEEK_MODEL` |
+| 8 | id_token 过期后重启 | 显示登录页面 | Codex 启动时不自动刷新过期 id_token | 用 `codex login --device-auth` 重新登录 |
+| 9 | `.env` 文件 UTF-8 BOM | 代理无法读取密钥 | PowerShell `Set-Content -Encoding UTF8` 会写 BOM | 用 ASCII 编码或移除 BOM |
+| 10 | `disable_response_storage = true` | 可能影响部分功能 | 来自原始备份的配置残留 | 按需保留或移除 |
