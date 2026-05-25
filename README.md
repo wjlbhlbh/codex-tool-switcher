@@ -2,8 +2,27 @@
 
 **在 CC Switch 和 Cockpit Tools 之间自由切换 Codex 接口，同时保持 ChatGPT 账号登录、保留全部历史会话。**
 
+**🎁 ChatGPT Free 账号可用插件 + 手机远程控制桌面 Codex**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Platform: Windows](https://img.shields.io/badge/Platform-Windows-blue)
+
+---
+
+## 亮点
+
+### ChatGPT Free（免费）账号解锁完整功能
+
+Codex 官方限制 ChatGPT Free 账号无法使用**插件**和**手机远程控制桌面**功能——因为这些要求 Codex 以 ChatGPT OAuth 方式登录，而非 API Key 方式。
+
+本项目通过 `auth_mode = "chatgpt"` + 统一 provider 架构，让 Free 账号也能：
+
+- ✅ **使用插件**（Browser Use 等）
+- ✅ **手机端 Codex 远程控制电脑端 Codex**（与 [codex-ccswitch-mobile](https://github.com/kuangre123/codex-ccswitch-mobile) 配合）
+- ✅ **会话历史永久可见**
+- ✅ **模型请求走本地代理**（CC Switch / Cockpit Tools），不消耗 OpenAI 配额
+
+**原理**：Auth 层用 ChatGPT OAuth 登录（满足插件和手机远程控制的身份验证要求），Model 层走本地代理（实际 AI 调用由 CC Switch 或 Cockpit Tools 转发到第三方 API）。两层互不干扰。
 
 ---
 
