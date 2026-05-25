@@ -1,15 +1,14 @@
-# ============================================================================
-# Codex Tool Switcher v3 — CC Switch <-> Cockpit Tools
+﻿# ============================================================================
+# Codex Tool Switcher v3 鈥?CC Switch <-> Cockpit Tools
 # GitHub: https://github.com/YOUR_USERNAME/codex-tool-switcher
 #
-# 统一 provider "codex_local_access" — Codex 原生保留名，会话永远可见
-# 切换只改 base_url 端口，不动 provider 名，历史对话永不丢失
+# 缁熶竴 provider "codex_local_access" 鈥?Codex 鍘熺敓淇濈暀鍚嶏紝浼氳瘽姘歌繙鍙
+# 鍒囨崲鍙敼 base_url 绔彛锛屼笉鍔?provider 鍚嶏紝鍘嗗彶瀵硅瘽姘镐笉涓㈠け
 #
-# 用法:
-#   .\switch-codex.ps1 cc       → 切换到 CC Switch (端口 16897)
-#   .\switch-codex.ps1 cockpit  → 切换到 Cockpit Tools (端口 42805)
-#   .\switch-codex.ps1 status   → 查看当前状态
-#   .\switch-codex.ps1 migrate  → 迁移旧会话到统一 provider
+# 鐢ㄦ硶:
+#   .\switch-codex.ps1 cc       鈫?鍒囨崲鍒?CC Switch (绔彛 16897)
+#   .\switch-codex.ps1 cockpit  鈫?鍒囨崲鍒?Cockpit Tools (绔彛 42805)
+#   .\switch-codex.ps1 status   鈫?鏌ョ湅褰撳墠鐘舵€?#   .\switch-codex.ps1 migrate  鈫?杩佺Щ鏃т細璇濆埌缁熶竴 provider
 # ============================================================================
 
 $codexDir = "$env:USERPROFILE\.codex"
@@ -149,7 +148,7 @@ sandbox = "elevated"
 name = "$toolName"
 base_url = "http://127.0.0.1:$port/v1"
 wire_api = "responses"
-requires_openai_auth = true
+requires_openai_auth = false
 
 [marketplaces.openai-bundled]
 last_updated = "2026-05-25T10:17:22Z"
@@ -196,7 +195,7 @@ switch ($action) {
         $target = Get-CurrentTarget
         Write-Host ""
         Write-Host "=============================================" -ForegroundColor Cyan
-        Write-Host "  Codex Switch Tool v3 — Status" -ForegroundColor Cyan
+        Write-Host "  Codex Switch Tool v3 鈥?Status" -ForegroundColor Cyan
         Write-Host "=============================================" -ForegroundColor Cyan
         if ($target -eq "cc_switch") { Write-Host "  Tool  : CC Switch (port 16897)" -ForegroundColor Yellow }
         elseif ($target -eq "cockpit") { Write-Host "  Tool  : Cockpit Tools (port 42805)" -ForegroundColor Yellow }
@@ -227,10 +226,10 @@ switch ($action) {
 
         Write-Host ""
         Write-Host "Commands:" -ForegroundColor Cyan
-        Write-Host "  .\switch-codex.ps1 cc       → CC Switch (16897)" -ForegroundColor White
-        Write-Host "  .\switch-codex.ps1 cockpit  → Cockpit Tools (42805)" -ForegroundColor White
-        Write-Host "  .\switch-codex.ps1 migrate  → Migrate sessions" -ForegroundColor White
-        Write-Host "  .\switch-codex.ps1 status   → This view" -ForegroundColor White
+        Write-Host "  .\switch-codex.ps1 cc       鈫?CC Switch (16897)" -ForegroundColor White
+        Write-Host "  .\switch-codex.ps1 cockpit  鈫?Cockpit Tools (42805)" -ForegroundColor White
+        Write-Host "  .\switch-codex.ps1 migrate  鈫?Migrate sessions" -ForegroundColor White
+        Write-Host "  .\switch-codex.ps1 status   鈫?This view" -ForegroundColor White
         Write-Host ""
         Write-Host "Important:" -ForegroundColor Yellow
         Write-Host "  - CC Switch providers: switch inside CC Switch UI (does not touch config)" -ForegroundColor White
@@ -246,3 +245,4 @@ switch ($action) {
         elseif ($target -eq "cockpit") { Write-Host "Current: Cockpit Tools (42805)" -ForegroundColor Yellow }
     }
 }
+

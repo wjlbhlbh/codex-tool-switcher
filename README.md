@@ -205,6 +205,7 @@ WHERE model_provider != 'codex_local_access';
 | `preferred_auth_method = "chatgpt"` | Codex 白屏 | 不被当前版本 Codex 支持 | 不使用此参数 |
 | 自创 provider 名 `local_proxy` | 会话不显示 | Codex 不识别自定义名 | 使用 `codex_local_access` |
 | `.cockpit_codex_auth.json` 标记 | 强制切到 API Key 模式 | Cockpit Tools 标记触发 | 重命名禁用 |
+| `requires_openai_auth = true` | CC Switch 供应商配置被覆盖 | Codex 发送 ChatGPT 令牌→CC Switch 深度链接导入→覆盖供应商 | 改为 `false` |
 | auth.json 只读 | Codex 启动白屏 | Codex 启动需写入令牌 | 保持可写，用守护进程恢复 |
 | FileSystemWatcher 事件丢失 | 守护进程漏恢复 | 事件机制不可靠 | 改用 5 秒轮询 MD5 哈希 |
 
